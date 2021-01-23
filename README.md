@@ -5,4 +5,6 @@ Spring Boot implementation of NASA Apis
   
 **Current state of development**
 - [x] **APOD** API implemented.
-- [ ] **NeoWS** API being implemented.
+- [x] **NeoWS** API implemented.
+- [x] **DONKI** API implemented.
+- [ ] **Earth** API being implemented.
