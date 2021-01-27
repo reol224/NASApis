@@ -8,10 +8,7 @@ import kong.unirest.json.JSONArray;
 import kong.unirest.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -56,6 +53,7 @@ public class NASAController {
      *
      *@param thumbs
      * If set to true, the API returns URL of video thumbnail.
+     *
      */
     @GetMapping("/planetary/apod")
     public Map<String, Object> apod(@RequestParam(required = false, defaultValue = "false") boolean concept_tags,
@@ -199,6 +197,7 @@ public class NASAController {
      *
      * @param keyword
      * default is set to NONE (example choices: swpc_annex)
+     *
      */
     @GetMapping("/DONKI/CMEAnalysis")
     public String donkiCMEAnalysis(@RequestParam(required = false) String start_date,
@@ -263,6 +262,7 @@ public class NASAController {
      *
      * @param catalog
      * default to ALL (choices: SWRC_CATALOG, WINSLOW_MESSENGER_ICME_CATALOG)
+     *
      */
     @GetMapping("/DONKI/IPS")
     public String donkiIPS(@RequestParam(required = false) String start_date,
@@ -424,6 +424,7 @@ public class NASAController {
      *
      * @param type
      * could be: all, FLR, SEP, CME, IPS, MPC, GST, RBE, report
+     *
      */
     @GetMapping("/DONKI/notifications")
     public String donkiNotifications(@RequestParam(required = false) String start_date,
@@ -448,6 +449,22 @@ public class NASAController {
         return response.toPrettyString();
     }
 
+    /**
+     *
+     * @param latitude
+     * Latitude
+     *
+     * @param longitude
+     * Longitude
+     *
+     * @param dim
+     * width and height of image in degrees
+     *
+     * @param date
+     * date of image;
+     * if not supplied, then the most recent image (i.e., closest to today) is returned
+     *
+     */
     @GetMapping(value = "/planetary/earth", produces = MediaType.IMAGE_PNG_VALUE)
     public byte[] earth(@RequestParam(required = false) Float latitude,
                         @RequestParam(required = false) Float longitude,
@@ -472,4 +489,140 @@ public class NASAController {
 
         return response;
     }
+
+    @GetMapping("/planetary/earth/assets")
+    public String earthAssets(@RequestParam(defaultValue = "1.5") Float latitude,
+                              @RequestParam(defaultValue = "100.75") Float longitude,
+                              @RequestParam(defaultValue = "0.025") Float dim,
+                              @RequestParam(required = false) String date){
+
+        if(date == null){
+            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            LocalDateTime now = LocalDateTime.now();
+            date = dtf.format(now);
+        }
+
+        JsonNode response = Unirest.get("https://api.nasa.gov/planetary/earth/assets")
+                .header("content-type", "application/json")
+                .queryString("api_key", TOKEN)
+                .queryString("lat", latitude)
+                .queryString("lon", longitude)
+                .queryString("dim", dim)
+                .queryString("date", date)
+                .asJson()
+                .getBody();
+
+        return response.toPrettyString();
+    }
+
+    @GetMapping("/EPIC/natural")
+    public String epicNatural(){
+
+        JsonNode response = Unirest.get("https://epic.gsfc.nasa.gov/api/natural")
+                .header("content-type", "application/json")
+                .queryString("api_key", TOKEN)
+                .asJson()
+                .getBody();
+
+        return response.toPrettyString();
+    }
+
+    @GetMapping("/EPIC/natural/{date}")
+    public String epicNaturalDate(@PathVariable String date){
+
+        if(date == null){
+            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            LocalDateTime now = LocalDateTime.now();
+            date = dtf.format(now);
+        }
+
+        JsonNode response = Unirest.get("https://epic.gsfc.nasa.gov/api/natural/date" + "/" + date)
+                .header("content-type", "application/json")
+                .queryString("api_key", TOKEN)
+                .queryString("date", date)
+                .asJson()
+                .getBody();
+
+        return response.toPrettyString();
+    }
+
+    @GetMapping("/EPIC/natural/all")
+    public String epicNaturalAll(){
+
+        JsonNode response = Unirest.get("https://epic.gsfc.nasa.gov/api/natural/all")
+                .header("content-type", "application/json")
+                .queryString("api_key", TOKEN)
+                .asJson()
+                .getBody();
+
+        return response.toPrettyString();
+    }
+
+    @GetMapping("/EPIC/natural/available")
+    public String epicNaturalAvailable(){
+
+        JsonNode response = Unirest.get("https://epic.gsfc.nasa.gov/api/natural/available")
+                .header("content-type", "application/json")
+                .queryString("api_key", TOKEN)
+                .asJson()
+                .getBody();
+
+        return response.toPrettyString();
+    }
+
+    @GetMapping("/EPIC/enhanced")
+    public String epicEnhanced(){
+
+        JsonNode response = Unirest.get("https://epic.gsfc.nasa.gov/api/enhanced")
+                .header("content-type", "application/json")
+                .queryString("api_key", TOKEN)
+                .asJson()
+                .getBody();
+
+        return response.toPrettyString();
+    }
+
+    @GetMapping("/EPIC/enhanced/{date}")
+    public String epicEnhancedDate(@PathVariable String date){
+
+        if(date == null){
+            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            LocalDateTime now = LocalDateTime.now();
+            date = dtf.format(now);
+        }
+
+        JsonNode response = Unirest.get("https://epic.gsfc.nasa.gov/api/enhanced/date" + "/" + date)
+                .header("content-type", "application/json")
+                .queryString("api_key", TOKEN)
+                .queryString("date", date)
+                .asJson()
+                .getBody();
+
+        return response.toPrettyString();
+    }
+
+    @GetMapping("/EPIC/enhanced/all")
+    public String epicEnhancedAll(){
+
+        JsonNode response = Unirest.get("https://epic.gsfc.nasa.gov/api/enhanced/all")
+                .header("content-type", "application/json")
+                .queryString("api_key", TOKEN)
+                .asJson()
+                .getBody();
+
+        return response.toPrettyString();
+    }
+
+    @GetMapping("/EPIC/enhanced/available")
+    public String epicEnhancedAvailable(){
+
+        JsonNode response = Unirest.get("https://epic.gsfc.nasa.gov/api/enhanced/available")
+                .header("content-type", "application/json")
+                .queryString("api_key", TOKEN)
+                .asJson()
+                .getBody();
+
+        return response.toPrettyString();
+    }
+
 }
