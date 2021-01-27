@@ -60,8 +60,8 @@ public class NASAController {
     @GetMapping("/planetary/apod")
     public Map<String, Object> apod(@RequestParam(required = false, defaultValue = "false") boolean concept_tags,
                          @RequestParam(required = false) String date,
-                         @RequestParam(required = false, defaultValue = "false") boolean hd,
-                         @RequestParam(required = false, defaultValue = "10") Integer count,
+                         @RequestParam(defaultValue = "false") boolean hd,
+                         @RequestParam(defaultValue = "10") Integer count,
                          @RequestParam(required = false) String start_date,
                          @RequestParam(required = false) String end_date,
                          @RequestParam(required = false, defaultValue = "false") boolean thumbs){
@@ -100,7 +100,7 @@ public class NASAController {
     @GetMapping("/neo/feed")
     public Map<String, Object> neo(@RequestParam(required = false) String start_date,
                         @RequestParam(required = false) String end_date,
-                        @RequestParam(required = false, defaultValue = "true") boolean detailed) {
+                        @RequestParam(defaultValue = "true") boolean detailed) {
 
         if(end_date == null){
             DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -203,12 +203,12 @@ public class NASAController {
     @GetMapping("/DONKI/CMEAnalysis")
     public String donkiCMEAnalysis(@RequestParam(required = false) String start_date,
                                    @RequestParam(required = false) String end_date,
-                                   @RequestParam(required = false, defaultValue = "true") boolean mostAccurateOnly,
-                                   @RequestParam(required = false, defaultValue = "true") boolean completeEntryOnly,
-                                   @RequestParam(required = false, defaultValue = "0") Integer speed,
-                                   @RequestParam(required = false, defaultValue = "0") Integer halfAngle,
-                                   @RequestParam(required = false, defaultValue = "ALL") String catalog,
-                                   @RequestParam(required = false, defaultValue = "NONE") String keyword){
+                                   @RequestParam(defaultValue = "true") boolean mostAccurateOnly,
+                                   @RequestParam(defaultValue = "true") boolean completeEntryOnly,
+                                   @RequestParam(defaultValue = "0") Integer speed,
+                                   @RequestParam(defaultValue = "0") Integer halfAngle,
+                                   @RequestParam(defaultValue = "ALL") String catalog,
+                                   @RequestParam(defaultValue = "NONE") String keyword){
 
         if(end_date == null){
             DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -267,8 +267,8 @@ public class NASAController {
     @GetMapping("/DONKI/IPS")
     public String donkiIPS(@RequestParam(required = false) String start_date,
                            @RequestParam(required = false) String end_date,
-                           @RequestParam(required = false, defaultValue = "ALL") String location,
-                           @RequestParam(required = false, defaultValue = "ALL") String catalog){
+                           @RequestParam(defaultValue = "ALL") String location,
+                           @RequestParam(defaultValue = "ALL") String catalog){
 
         if(end_date == null){
             DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -428,7 +428,7 @@ public class NASAController {
     @GetMapping("/DONKI/notifications")
     public String donkiNotifications(@RequestParam(required = false) String start_date,
                                      @RequestParam(required = false) String end_date,
-                                     @RequestParam(required = false, defaultValue = "all") String type){
+                                     @RequestParam(defaultValue = "all") String type){
 
         if(end_date == null){
             DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -451,7 +451,7 @@ public class NASAController {
     @GetMapping(value = "/planetary/earth", produces = MediaType.IMAGE_PNG_VALUE)
     public byte[] earth(@RequestParam(required = false) Float latitude,
                         @RequestParam(required = false) Float longitude,
-                        @RequestParam(required = false, defaultValue = "0.025") Float dim,
+                        @RequestParam(defaultValue = "0.025") Float dim,
                         @RequestParam(required = false) String date){
 
         if(date == null){
