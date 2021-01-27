@@ -7,4 +7,6 @@ Spring Boot implementation of NASA Apis
 - [x] **APOD** API implemented.
 - [x] **NeoWS** API implemented.
 - [x] **DONKI** API implemented.
-- [ ] **Earth** API being implemented.
+- [x] **Earth** API implemented.
+- [x] **EPIC** API implemented.
+- [x] **EPIC Archives** API being implemented.
