@@ -9,4 +9,4 @@ Spring Boot implementation of NASA Apis
 - [x] **DONKI** API implemented.
 - [x] **Earth** API implemented.
 - [x] **EPIC** API implemented.
-- [x] **EPIC Archives** API being implemented.
+- [ ] **EPIC Archives** API being implemented.
