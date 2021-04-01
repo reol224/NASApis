@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -94,7 +95,7 @@ public class NASAController {
         return map;
     }
 
-    /*Near Earth Object Web Service*/
+    /** Near Earth Object Web Service */
     @GetMapping("/neo/feed")
     public Map<String, Object> neo(@RequestParam(required = false) String start_date,
                         @RequestParam(required = false) String end_date,
@@ -132,12 +133,13 @@ public class NASAController {
             }
 
 //                for(int j = 0 ; j < date.length(); j++){
-//                    for (LocalDate start = (LocalDate) startTime; start.isBefore((ChronoLocalDate) endTime); start = start.plusDays(1)){
+//                    for (LocalDate start = LocalDate.now(); start.isBefore(start.plusDays(7)); start = start.plusDays(1)) {
 //                        int neoRefId = date.getJSONObject(j).getInt("neo_reference_id");
 //                        String name = date.getJSONObject(j).getString("name");
 //                        String nasaJplUrl = date.getJSONObject(j).getString("nasa_jpl_url");
 //                        boolean isDangerous = date.getJSONObject(j).getBoolean("is_potentially_hazardous_asteroid");
 //                        list.add(new NEOWSModel(neoRefId, name, nasaJplUrl, isDangerous));
+//                    }
 //            }
         }
 
@@ -156,7 +158,7 @@ public class NASAController {
         return response.toPrettyString();
     }
 
-    /*Coronal Mass Ejection*/
+    /** Coronal Mass Ejection */
     @GetMapping("/DONKI/CME")
     public String donkiCME(@RequestParam(required = false) String start_date,
                            @RequestParam(required = false) String end_date){
@@ -232,7 +234,7 @@ public class NASAController {
         return response.toPrettyString();
     }
 
-    /*Geomagnetic Storm*/
+    /** Geomagnetic Storm */
     @GetMapping("/DONKI/GST")
     public String donkiGST(@RequestParam(required = false) String start_date,
                            @RequestParam(required = false) String end_date){
@@ -289,7 +291,7 @@ public class NASAController {
         return response.toPrettyString();
     }
 
-    /*Solar Flare*/
+    /** Solar Flare */
     @GetMapping("/DONKI/FLR")
     public String donkiFLR(@RequestParam(required = false) String start_date,
                            @RequestParam(required = false) String end_date){
@@ -311,7 +313,7 @@ public class NASAController {
         return response.toPrettyString();
     }
 
-    /*Solar Energetic Particle*/
+    /** Solar Energetic Particle */
     @GetMapping("/DONKI/SEP")
     public String donkiSEP(@RequestParam(required = false) String start_date,
                            @RequestParam(required = false) String end_date){
@@ -333,7 +335,7 @@ public class NASAController {
         return response.toPrettyString();
     }
 
-    /*Magnetopause Crossing*/
+    /** Magnetopause Crossing */
     @GetMapping("/DONKI/MPC")
     public String donkiMPC(@RequestParam(required = false) String start_date,
                            @RequestParam(required = false) String end_date){
@@ -355,7 +357,7 @@ public class NASAController {
         return response.toPrettyString();
     }
 
-    /*Radiation Belt Enhancement*/
+    /** Radiation Belt Enhancement */
     @GetMapping("/DONKI/RBE")
     public String donkiRBE(@RequestParam(required = false) String start_date,
                            @RequestParam(required = false) String end_date){
@@ -377,7 +379,7 @@ public class NASAController {
         return response.toPrettyString();
     }
 
-    /*High Speed Stream*/
+    /** High Speed Stream */
     @GetMapping("/DONKI/HSS")
     public String donkiHSS(@RequestParam(required = false) String start_date,
                            @RequestParam(required = false) String end_date){
@@ -465,7 +467,7 @@ public class NASAController {
      * if not supplied, then the most recent image (i.e., closest to today) is returned
      *
      */
-    @GetMapping(value = "/planetary/earth", produces = MediaType.IMAGE_PNG_VALUE)
+    @GetMapping(value = "/planetary/earth/imagery/", produces = {MediaType.IMAGE_PNG_VALUE, MediaType.IMAGE_JPEG_VALUE})
     public byte[] earth(@RequestParam(required = false) Float latitude,
                         @RequestParam(required = false) Float longitude,
                         @RequestParam(defaultValue = "0.025") Float dim,
@@ -477,8 +479,10 @@ public class NASAController {
             date = dtf.format(now);
         }
 
-        byte[] response = Unirest.get("https://api.nasa.gov/planetary/earth/imagery")
+        byte[] response = Unirest.get("https://api.nasa.gov/planetary/earth/imagery/")
                 .header("content-type", MediaType.IMAGE_PNG_VALUE)
+                .header("content-type", MediaType.IMAGE_JPEG_VALUE)
+                .header("Accept-Ranges", "bytes")
                 .queryString("api_key", TOKEN)
                 .queryString("lat", latitude)
                 .queryString("lon", longitude)
@@ -517,7 +521,6 @@ public class NASAController {
 
     @GetMapping("/EPIC/natural")
     public String epicNatural(){
-
         JsonNode response = Unirest.get("https://epic.gsfc.nasa.gov/api/natural")
                 .header("content-type", "application/json")
                 .queryString("api_key", TOKEN)
@@ -548,7 +551,6 @@ public class NASAController {
 
     @GetMapping("/EPIC/natural/all")
     public String epicNaturalAll(){
-
         JsonNode response = Unirest.get("https://epic.gsfc.nasa.gov/api/natural/all")
                 .header("content-type", "application/json")
                 .queryString("api_key", TOKEN)
@@ -560,7 +562,6 @@ public class NASAController {
 
     @GetMapping("/EPIC/natural/available")
     public String epicNaturalAvailable(){
-
         JsonNode response = Unirest.get("https://epic.gsfc.nasa.gov/api/natural/available")
                 .header("content-type", "application/json")
                 .queryString("api_key", TOKEN)
@@ -572,7 +573,6 @@ public class NASAController {
 
     @GetMapping("/EPIC/enhanced")
     public String epicEnhanced(){
-
         JsonNode response = Unirest.get("https://epic.gsfc.nasa.gov/api/enhanced")
                 .header("content-type", "application/json")
                 .queryString("api_key", TOKEN)
@@ -603,7 +603,6 @@ public class NASAController {
 
     @GetMapping("/EPIC/enhanced/all")
     public String epicEnhancedAll(){
-
         JsonNode response = Unirest.get("https://epic.gsfc.nasa.gov/api/enhanced/all")
                 .header("content-type", "application/json")
                 .queryString("api_key", TOKEN)
@@ -615,7 +614,6 @@ public class NASAController {
 
     @GetMapping("/EPIC/enhanced/available")
     public String epicEnhancedAvailable(){
-
         JsonNode response = Unirest.get("https://epic.gsfc.nasa.gov/api/enhanced/available")
                 .header("content-type", "application/json")
                 .queryString("api_key", TOKEN)
@@ -625,4 +623,49 @@ public class NASAController {
         return response.toPrettyString();
     }
 
+    /**
+     *
+     * @param collection
+     * natural/enhanced
+     *
+     * @param year
+     * any
+     *
+     * @param month
+     * any
+     *
+     * @param day
+     * any
+     *
+     * @param imageType
+     * png/jpg
+     *
+     * @param fileName
+     * epic_1b_20161031xxxx.png
+     */
+    //http://localhost:8080/api/nasa/EPIC/archive/natural/2015/10/31/png/epic_1b_20151031074844.png
+    @GetMapping(value = "/EPIC/archive/{collection}/{year}/{month}/{day}/{imageType}/{fileName}.{imageType}", produces = {MediaType.IMAGE_PNG_VALUE, MediaType.IMAGE_JPEG_VALUE})
+    public byte[] epicArchive(@PathVariable String collection,
+                                     @PathVariable Integer year,
+                                     @PathVariable Integer month,
+                                     @PathVariable Integer day,
+                                     @PathVariable String imageType,
+                                     @PathVariable String fileName){
+
+        byte[] response = Unirest.get("https://epic.gsfc.nasa.gov/archive/" + collection + "/"
+                + year + "/" + month + "/" + day + "/" + imageType + "/" + fileName + "." + imageType)
+                .header("content-type", MediaType.IMAGE_PNG_VALUE)
+                .header("Accept-Ranges", "bytes")
+                .queryString("api_key", TOKEN)
+                .queryString("collection", collection)
+                .queryString("year", year)
+                .queryString("month", month)
+                .queryString("day", day)
+                .queryString("imageType", imageType)
+                .queryString("fileName", fileName)
+                .asBytes()
+                .getBody();
+
+        return response;
+    }
 }
