@@ -4,10 +4,10 @@
 
 Spring Boot implementation of NASA Apis. **Because no one else was doing it.**
 
-**How to contribute?**
+**How to contribute?** :sunglasses:
   - Get a key from [NASA](https://api.nasa.gov/).
   
-**Current state of development**
+**Current state of development** :star:
 - [x] **EPIC Archives** API implemented.
 - [x] **APOD** API implemented.
 - [x] **NeoWS** API implemented.
