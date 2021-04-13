@@ -1,6 +1,7 @@
 package com.jul.NASapis.controllers;
 
 import com.jul.NASapis.models.APODModel;
+import com.jul.NASapis.models.EONETModel;
 import com.jul.NASapis.models.NEOWSModel;
 import kong.unirest.JsonNode;
 import kong.unirest.Unirest;
@@ -10,13 +11,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 @RequestMapping("api/nasa")
@@ -667,5 +664,101 @@ public class NASAController {
                 .getBody();
 
         return response;
+    }
+
+    //https://eonet.sci.gsfc.nasa.gov/api/v3/events
+    //https://eonet.sci.gsfc.nasa.gov/docs/v3
+    //http://localhost:8080/api/nasa/EONET?start=2019-01-01&end=2019-01-31
+    /**
+     * The Earth Observatory Natural Event Tracker
+     *
+     * @param sourceID
+     * Filter the returned events by the Source.
+     * Multiple sources can be included in the parameter: comma separated, operates as a boolean OR.
+     * List of available sources: https://eonet.sci.gsfc.nasa.gov/api/v3/sources
+     *
+     * @param status
+     * open | closed | all
+     * Events that have ended are assigned a closed date and the existence of that date will allow you to filter for only-open or only-closed events.
+     * Omitting the status parameter will return only the currently open events (default).
+     * Using “all“ will list open and closed values.
+     *
+     * @param limit
+     * Limits the number of events returned
+     *
+     * @param days
+     * Limit the number of prior days (including today) from which events will be returned.
+     *
+     * @param start
+     * YYYY-MM-DD
+     * Select a range of dates for the events to fall between (inclusive) in a YYYY-MM-DD format.
+     *
+     * @param end
+     * YYYY-MM-DD
+     * Select a range of dates for the events to fall between (inclusive) in a YYYY-MM-DD format.
+     *
+     * @param magnitudeID
+     * Select a ceiling, floor, or range of magnitude values for the events to fall between (inclusive).
+     * List of available magnitudes: https://eonet.sci.gsfc.nasa.gov/api/v3/magnitudes
+     *
+     * @param magMin
+     * Select a ceiling, floor, or range of magnitude values for the events to fall between (inclusive).
+     *
+     * @param magMax
+     * Select a ceiling, floor, or range of magnitude values for the events to fall between (inclusive).
+     *
+     * @param bbox
+     * min lon, max lat,
+     * max lon, min lat
+     * Query using a bounding box for all events with data points that fall within.
+     * This uses two pairs of coordinates: the upper left hand corner (lon,lat) followed by the lower right hand corner (lon,lat).
+     */
+    @GetMapping("/EONET")
+    public Map<String, Object> eonet(@RequestParam(required = false) String[] sourceID,
+                      @RequestParam(required = false) String status,
+                      @RequestParam(required = false) Integer limit,
+                      @RequestParam(required = false) Integer days,
+                      @RequestParam(required = false) String start,
+                      @RequestParam(required = false) String end,
+                      @RequestParam(required = false) String magnitudeID,
+                      @RequestParam(required = false) Float magMin,
+                      @RequestParam(required = false) Float magMax,
+                      @RequestParam(required = false) Float[] bbox){
+
+//        if(start == null){
+//            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+//            start = dtf.format(LocalDateTime.now());
+//        }
+
+        JSONArray response = Unirest.get("https://eonet.sci.gsfc.nasa.gov/api/v3/events")
+                .queryString("source", sourceID)
+                .queryString("status", status)
+                .queryString("limit", limit)
+                .queryString("days", days)
+                .queryString("start", start)
+                .queryString("end", end)
+                .queryString("magID", magnitudeID)
+                .queryString("magMin", magMin)
+                .queryString("magMax", magMax)
+                .queryString("bbox", bbox)
+                .asJson()
+                .getBody().getObject().getJSONArray("events");
+
+        List<EONETModel> list = new ArrayList<>();
+        for(int i = 0 ; i < response.length(); i++){
+            String id = response.getJSONObject(i).getString("id");
+            String title = response.getJSONObject(i).getString("title");
+            String url = "";
+            JSONArray sources = response.getJSONObject(i).getJSONArray("sources");
+            for(int j = 0; j < sources.length(); j++){
+                url = sources.getJSONObject(j).getString("url");
+            }
+            list.add(new EONETModel(id,title,url));
+        }
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("Info", list);
+
+        return map;
     }
 }

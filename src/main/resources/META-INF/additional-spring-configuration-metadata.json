@@ -1,1 +1,8 @@
-{ "properties": [ ] }
+{
+  "properties": [
+    {
+      "name": "nasa.api.key",
+      "type": "java.lang.String",
+      "description": "A mighty NASA API key has appeared!"
+  }
+] }

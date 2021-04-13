@@ -1,8 +1,10 @@
 package com.jul.NASapis.models;
 
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
+@Setter
 public class APODModel {
     String concept_tags;
     String date;
