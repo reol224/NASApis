@@ -1,6 +1,6 @@
-<p align="center">
-  <img src="https://i.imgur.com/73bdDU1.jpg" width="800" height="350"/>
-</p>
+<a href="https://imgur.com/Sg7SQGy"><img src="https://i.imgur.com/Sg7SQGy.jpg" title="source: imgur.com" /></a>
+
+[![CircleCI](https://circleci.com/gh/reol224/NASApis/tree/master.svg?style=shield)](https://circleci.com/gh/reol224/NASApis/tree/master)
 
 Spring Boot implementation of NASA Apis. **Because no one else was doing it.**
 
